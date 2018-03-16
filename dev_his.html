@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>NBIOT</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="css/bootstrap-table.css"/>
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/bootstrap-table.js"></script>
+		<!-- put your locale files after bootstrap-table.js -->
+		<script src="js/bootstrap-table-zh-CN.js"></script>
+<script src="js/moment-with-locales.min.js"></script>  
+<link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">  
+<script src="js/bootstrap-datetimepicker.min.js"></script>  
+
+	</head>
+	<div align="center">
+	<img src="img/header_bg_new.jpg" alt="莱斯信息">
+	</div>
+		
+	<body>
+	<nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#"><font size="6">NB-IoT设备管理平台</font></a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+        </div>	
+ 
+        <div id="navbar" class="collapse navbar-collapse">
+      
+            <ul class="nav navbar-nav navbar-right"> 
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> 注册</a></li> 
+            <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li> 
+        </ul> 
+        </div><!--/.nav-collapse --> 
+
+      </div>
+    </nav>
+    <div class="container">
+    <div class="row"> 
+    	<div class="col-md-2">
+    		
+          <ul class="nav nav-pills nav-stacked">
+            <li><a href="index.html">主页</a></li>
+            <li><a href="dev_info.html">设备属性</a></li>
+            <li><a href="dev_para.html">设备参数</a></li>
+            <li class="active""><a href="dev_his.html">历史数据</a></li>
+            <li><a href="syslog.html">系统日志</a></li>
+            <li><a href="contact.html">联系我们</a></li>
+          </ul>
+        
+    	</div>
+    	<div class="col-md-10">
+    		<div class="tabs-container">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">历史数据</a>
+                        </li>
+                        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">备用</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="panel-body">
+                               <div class="container-fluid">                     		
+   <div class="form-inline" id="query-form" style="padding-bottom:10px;">
+   
+    <fieldset>
+                        <legend><font size="3">查询条件</font></legend>
+                        <div class="row"  >
+           
+    <div class='col-sm-4'>
+    	 
+        <div class="form-group" >
+          	<div class='col-sm-4' style="margin-top:5px;">日期</div>
+            <!--指定 date标记-->
+            
+            <div class='input-group date' id='datetimepicker1' >
+                <input name="starttime" type='text' class="form-control" />
+                <span class="input-group-addon" >
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            
+        </div>
+        
+    </div>
+   
+    
+    <div class='col-sm-4'>
+        <div class="form-group" >
+            <div class='col-sm-2' style="margin-top:5px;">至</div>
+            <!--指定 date标记-->
+            <div class='input-group date' id='datetimepicker2' readonly>
+                <input name="stoptime" type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+			
+            <input name="areaid" placeholder='区域代码' type="text" 
+                   style="float:left;width:150px;margin-right:5px;margin-top:20px;" v-model="areaid"
+                   class="form-control" >
+            
+                <input name="tcc" placeholder='停车场代码' type="text" 
+                       style="float:left;width:150px;margin-right:5px;margin-top:20px;" v-model="tcc"
+                       class="form-control">
+           
+                     
+                <input name="berth" placeholder='泊位号' type="text"
+                       style="float:left;width:150px;margin-right:5px;margin-top:20px;" v-model="berth"
+                       class="form-control">
+            
+            <div class="btn-group">
+                <button id="btn_search" onclick="customSearch()" type="button" class="btn btn-primary btn-space" style="margin-left:20px;margin-top:20px;">
+                    <span class="fa fa-search" aria-hidden="true" class="btn-icon-space">查询</span>
+                    
+                </button>
+                <button id="btn_reset" onclick="resetSearch()" type="button" class="btn btn-default btn-space" style="margin-top:20px;">
+                    <span class="fa fa-eraser" aria-hidden="true" class="btn-icon-space">重置</span>
+                    
+                </button>
+            </div>
+           
+<script>
+	$(function () {  
+    var picker1 = $('#datetimepicker1').datetimepicker({  
+        format: 'YYYY-MM-DD HH:mm',  
+        locale: moment.locale('zh-cn'),  
+        defaultDate: "2018-03-14 00:00" ,
+        sideBySide: true,
+        showClear: true,
+    });  
+    var picker2 = $('#datetimepicker2').datetimepicker({  
+        format: 'YYYY-MM-DD HH:mm',  
+        locale: moment.locale('zh-cn')  ,
+        defaultDate: "2018-03-15 00:00" ,
+        sideBySide: true,
+         showClear: true,
+    });  
+    //动态设置最小值  
+    picker1.on('dp.change', function (e) {  
+        picker2.data('DateTimePicker').minDate(e.date);  
+    });  
+    //动态设置最大值  
+    picker2.on('dp.change', function (e) {  
+        picker1.data('DateTimePicker').maxDate(e.date);  
+    });  
+});
+</script>
+           
+</fieldset>
+        </div>
+           
+        	<div id="reportTableDiv" >
+        		
+                               	<table id="devhisTable"></table>	
+								<script src="js/custom_js/devHisTable.js">
+						
+							</script>
+							
+						</div>
+        
+                  
+   </div>
+						
+							
+                         
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="panel-body">
+                                <strong>移动设备优先</strong>
+                                <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+  
+	
+    	</div>
+    
+    </div>
+    
+    </div>
+
+	</body>
+</html>
